@@ -45,7 +45,7 @@ jobs:
   
   deploy-to-vm:
     name: Build & Deploy to VirtualBox VM
-    needs: [sast-scan, pylint-check]
+    needs: [bandit-check, pylint-check]
     runs-on: self-hosted
     steps:
       - name: Checkout Source Code
