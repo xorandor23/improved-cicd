@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Timeline Confess</h2>
+
+    {% if current_user.is_authenticated %}
+    <form action="{{ url_for('create_confess') }}" method="POST" style="margin-bottom: 30px;">
+        <textarea name="content" rows="4" style="width: 100%; padding: 10px;" placeholder="Tulis confess kamu di sini..." required></textarea><br><br>
+        <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer;">Kirim Confess</button>
+    </form>
+    {% else %}
+    <p><i>Silakan <a href="{{ url_for('login') }}">login</a> untuk menulis confess.</i></p>
+    {% endif %}
+
+    <hr>
+
+    {% for confess in confessions %}
+        <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <p style="margin: 0 0 10px 0;">{{ confess.content }}</p>
+            <small style="color: #666;">
+                Dari: {{ confess.author.username }}
+                {% if current_user.is_authenticated and current_user.id == confess.user_id %}
+                    | <a href="{{ url_for('delete_confess', id=confess.id) }}" style="color: red; text-decoration: none;" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+                {% endif %}
+            </small>
+        </div>
+    {% else %}
+        <p>Belum ada confess saat ini.</p>
+    {% endfor %}
+{% endblock %}

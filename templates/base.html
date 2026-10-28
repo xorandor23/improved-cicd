@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplikasi Confess</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        nav { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #ccc; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007BFF; }
+        .alert { padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+        .alert-success { background-color: #d4edda; color: #155724; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Beranda</a>
+        {% if current_user.is_authenticated %}
+            <span>Halo, {{ current_user.username }}!</span>
+            <a href="{{ url_for('logout') }}" style="float: right;">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" style="float: right;">Login</a>
+            <a href="{{ url_for('register') }}" style="float: right;">Buat Akun</a>
+        {% endif %}
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
