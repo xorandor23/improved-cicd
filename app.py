@@ -26,6 +26,9 @@ class Confession(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+with app.app_context():
+        db.create_all() # Membuat database confess.db secara otomatis
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -103,6 +106,4 @@ def delete_confess(id):
         flash('Anda tidak memiliki izin untuk menghapus confess ini.', 'danger')
     return redirect(url_for('index'))
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all() # Membuat database confess.db secara otomatis
+    
