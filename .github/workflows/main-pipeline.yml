@@ -36,3 +36,17 @@ jobs:
         with:
           name: trivy-log-${{ env.TIMESTAMP }}
           path: trivy-scan-${{ env.TIMESTAMP }}.log
+  
+  deploy-to-vm:
+    name: Build & Deploy to VirtualBox VM
+    needs: ['trivy']
+    runs-on: self-hosted
+    steps:
+      - name: Build and Run Container
+        run: |
+         docker stop aplikasi-513 || true
+         docker rm aplikasi-513 || true
+         docker run -d -p 5000:5000 --name aplikasi-513 aplikasi-513:latest
+         docker ps | grep aplikasi-513
+  
+  
