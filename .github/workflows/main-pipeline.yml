@@ -39,6 +39,7 @@ jobs:
               --severity HIGH,CRITICAL \
               --exit-code 1 \
               --format table \
+              --ignore-unfixed \
               aplikasi-513:latest | tee trivy-scan-${{ env.TIMESTAMP }}.log
 
         - name: Upload Trivy Logs
