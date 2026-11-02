@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.token_hex(16)
@@ -13,6 +14,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = "Silakan login untuk mengakses halaman ini."
+
+metrics = PrometheusMetrics(app)
 
 # Model Database
 class User(UserMixin, db.Model):

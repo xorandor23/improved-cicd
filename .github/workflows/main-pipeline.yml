@@ -49,4 +49,3 @@ jobs:
          docker run -d -p 5000:5000 --name aplikasi-513 aplikasi-513:latest
          docker ps | grep aplikasi-513
   
-  
