@@ -36,10 +36,9 @@ jobs:
               -v /var/run/docker.sock:/var/run/docker.sock \
               -v $HOME/.cache/trivy:/root/.cache/ \
               aquasec/trivy:0.76.1 image \
-              --severity HIGH,CRITICAL \
+              --severity MEDIUM,HIGH,CRITICAL \
               --exit-code 1 \
               --format table \
-              --ignore-unfixed \
               aplikasi-513:latest | tee trivy-scan-${{ env.TIMESTAMP }}.log
 
         - name: Upload Trivy Logs
