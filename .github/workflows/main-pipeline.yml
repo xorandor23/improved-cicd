@@ -1,0 +1,28 @@
+name: cicd-devsecops
+
+on:
+  push:
+    branches: ["second"]
+  pull_request:
+    branches: ["second"]
+
+jobs:
+  build-images:
+    name: Build images with docker
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      
+      - name: Build Docker Images
+        run: |
+         docker rmi aplikasi-513 || true
+         docker build -t aplikasi-513:latest .
+    
+  trivy:
+    name: Scan Images with trivy
+    runs-on: self-hosted
+    steps:
+      - name: Run trivy
+      - run: |
+          docker run -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/Library/Caches:/root/.cache/ aquasec/trivy:0.76.1 image aplikasi-513:latest
