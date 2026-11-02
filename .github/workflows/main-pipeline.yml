@@ -24,5 +24,15 @@ jobs:
     needs: ['build-images']
     runs-on: self-hosted
     steps:
+      - name: Generate Timestamp
+        run: echo "TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
+
       - name: Scan Images with Trivy
-        run: docker run -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/Library/Caches:/root/.cache/ aquasec/trivy:0.76.1 image aplikasi-513:latest
+        run: docker run -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/Library/Caches:/root/.cache/ aquasec/trivy:0.76.1 image aplikasi-513:latest | tee trivy-scan-${{ env.TIMESTAMP }}.log
+
+      - name: Upload Trivy Logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-log-${{ env.TIMESTAMP }}
+          path: trivy-scan-${{ env.TIMESTAMP }}.log
