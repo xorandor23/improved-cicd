@@ -21,6 +21,7 @@ jobs:
     
   trivy:
     name: Scan Images with trivy
+    needs: ['build-images']
     runs-on: self-hosted
     steps:
       - name: Scan Images with Trivy
