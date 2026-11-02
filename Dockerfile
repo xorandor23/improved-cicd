@@ -3,6 +3,7 @@ FROM python:3.14-slim
 WORKDIR /app
 
 # Menjalankan container dengan non-root user demi keamanan runtime
+RUN apt update -y && apt upgrade -y
 RUN useradd -m appuser
 
 COPY requirements.txt .
