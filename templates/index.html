@@ -5,6 +5,7 @@
 
     {% if current_user.is_authenticated %}
     <form action="{{ url_for('create_confess') }}" method="POST" style="margin-bottom: 30px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <textarea name="content" rows="4" style="width: 100%; padding: 10px;" placeholder="Tulis confess kamu di sini..." required></textarea><br><br>
         <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer;">Kirim Confess</button>
     </form>

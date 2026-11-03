@@ -4,3 +4,4 @@ Flask-Login
 Werkzeug
 gunicorn
 prometheus_flask_exporter
+Flask-WTF
