@@ -1,3 +1,7 @@
+"""
+Modul utama untuk Aplikasi Confess.
+Menangani routing, otentikasi, dan interaksi database menggunakan Flask.
+"""
 import secrets
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -26,15 +30,19 @@ login_manager.login_message = "Silakan login untuk mengakses halaman ini."
 metrics = PrometheusMetrics(app)
 csrf = CSRFProtect(app)
 
-# Model Database
+
+# pylint: disable=too-few-public-methods
 class User(UserMixin, db.Model):
+    """Model untuk tabel pengguna (User)."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     confessions = db.relationship("Confession", backref="author", lazy=True)
 
 
+# pylint: disable=too-few-public-methods
 class Confession(db.Model):
+    """Model untuk tabel postingan (Confession)."""
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -46,18 +54,21 @@ with app.app_context():
 
 @login_manager.user_loader
 def load_user(user_id):
+    """Memuat user berdasarkan ID untuk session manager."""
     return User.query.get(int(user_id))
 
 
 # Routes
 @app.route("/")
 def index():
+    """Route utama untuk menampilkan daftar confess dari database."""
     confessions = Confession.query.order_by(Confession.id.desc()).all()
     return render_template("index.html", confessions=confessions)
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """Route untuk menangani pendaftaran akun baru."""
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -81,6 +92,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Route untuk menangani proses otentikasi login."""
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -89,8 +101,9 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for("index"))
-        else:
-            flash("Login gagal. Periksa username dan password.", "danger")
+            
+        # Pylint R1705: Blok 'else' dihapus karena sudah ada 'return' di dalam 'if'
+        flash("Login gagal. Periksa username dan password.", "danger")
 
     return render_template("login.html")
 
@@ -98,6 +111,7 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
+    """Route untuk mengeluarkan (logout) pengguna dari sesi."""
     logout_user()
     return redirect(url_for("index"))
 
@@ -105,6 +119,7 @@ def logout():
 @app.route("/create", methods=["POST"])
 @login_required
 def create_confess():
+    """Route untuk membuat dan menyimpan postingan confess baru."""
     content = request.form.get("content")
     if content:
         new_confession = Confession(content=content, user_id=current_user.id)
@@ -114,9 +129,11 @@ def create_confess():
     return redirect(url_for("index"))
 
 
+# pylint: disable=redefined-builtin
 @app.route("/delete/<int:id>")
 @login_required
 def delete_confess(id):
+    """Route untuk menghapus postingan berdasarkan ID."""
     confession = Confession.query.get_or_404(id)
     # Pastikan hanya pemilik yang bisa menghapus
     if confession.user_id == current_user.id:
