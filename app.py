@@ -16,7 +16,7 @@ from flask_login import (
 from werkzeug.security import generate_password_hash, check_password_hash
 from prometheus_flask_exporter import PrometheusMetrics
 from flask_wtf.csrf import CSRFProtect
-
+#kakda
 app = Flask(__name__)
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///confess.db"
